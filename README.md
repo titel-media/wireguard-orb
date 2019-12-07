@@ -27,7 +27,7 @@ $ cat <<EOF | base64
 > EOF
 ```
 
-`AllowedIPs` has to be "0.0.0.0/0" as it will be replaces of the public IP of the current job while execution.`
+If `AllowedIPs` is "0.0.0.0/0" the CircleCI container will stop responding and the build will crush. To avoid this "0.0.0.0/0" will be replaced with the public IP of the current job while execution.
 
 See [CircleCI Documentation](https://circleci.com/docs/2.0/env-vars) for instructions on how you would set this up.
 
