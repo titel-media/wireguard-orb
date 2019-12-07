@@ -28,6 +28,7 @@ commands:
           command: |
             echo -n "${<<parameters.config>>:?}" | base64 --decode | sed "s/0.0.0.0\/0/$(curl -s https://ifconfig.me)/g" > wg0.conf
             sudo mv wg0.conf /etc/wireguard/wg0.conf
+            sudo chmod 600 /etc/wireguard/wg0.conf
       - run:
           name: Connect to VPN
           command: |
