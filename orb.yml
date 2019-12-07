@@ -32,7 +32,6 @@ commands:
       - run:
           name: Connect to VPN
           command: |
-            sudo /bin/bash -c 'echo "nameserver 10.255.0.2" > /run/resolvconf/resolv.conf'
             sudo wg-quick up wg0
   disconnect:
     description: "Disconnect from WireGuard VPN"
