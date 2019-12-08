@@ -39,8 +39,8 @@ commands:
     description: "Disconnect from WireGuard VPN"
     steps:
       - run:
-          name: Connect to VPN
-          command: sudo wg-quick down wg0
+          name: Disconnect from VPN
+          command: sudo wg-quick down wg0 || true
       - run:
           name: remove WireGuard config
           command: sudo rm /etc/wireguard/wg0.conf
