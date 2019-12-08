@@ -3,6 +3,9 @@ description: WireGuard VPN client Orb
 
 executors:
   default:
+    description: |
+      "Tested only on the CircleCI machine executor, but should work
+      on most debian/ubuntu based images as well"
     machine: true
 
 commands:
@@ -19,7 +22,8 @@ commands:
     description: "Connect to WireGuard VPN"
     parameters:
       config:
-        description: "ENV var name containing WireGuard client config file content"
+        description: |
+          "ENV var name containing WireGuard client config file content base64 encoded"
         type: env_var_name
         default: WIREGUARD_CONFIG
     steps:
@@ -51,7 +55,7 @@ example:
     usage:
       version: 2.1
       orbs:
-        wg: titel-media/terraform@0.0.1
+        wg: titel-media/wireguard@0.0.5
       jobs:
         ping:
           executor: wg/default
