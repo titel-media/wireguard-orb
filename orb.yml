@@ -15,7 +15,7 @@ commands:
       - run:
           name: Install WireGuard Client
           command: |
-            if [ "$(cat /etc/os-release | grep ^ID= | cut -d= -f2)" != "alpine" ]; then
+            if [ "$(cat /etc/os-release | grep ^ID= | cut -d= -f2)" == "alpine" ]; then
               apk add -U wireguard-tools
             else
               sudo add-apt-repository ppa:wireguard/wireguard -y
@@ -37,17 +37,17 @@ commands:
             echo -n "${<<parameters.config>>:?}" | \
               base64 -d | \
               sed "s/0.0.0.0\/0/$(curl -s https://ifconfig.me)/g" > wg0.conf
-            if [ "$(cat /etc/os-release | grep ^ID= | cut -d= -f2)" != "alpine" ]; then
-              sudo mv wg0.conf /etc/wireguard/wg0.conf
-              sudo chmod 700 /etc/wireguard/wg0.conf
-            else
+            if [ "$(cat /etc/os-release | grep ^ID= | cut -d= -f2)" == "alpine" ]; then
               mv wg0.conf /etc/wireguard/wg0.conf
               chmod 700 /etc/wireguard/wg0.conf
+            else
+              sudo mv wg0.conf /etc/wireguard/wg0.conf
+              sudo chmod 700 /etc/wireguard/wg0.conf
             fi
       - run:
           name: Connect to VPN
           command: |
-            if [ "$(cat /etc/os-release | grep ^ID= | cut -d= -f2)" != "alpine" ]; then
+            if [ "$(cat /etc/os-release | grep ^ID= | cut -d= -f2)" == "alpine" ]; then
               wq-quick up wg0
             else
               sudo wg-quick up wg0
