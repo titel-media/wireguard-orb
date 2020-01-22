@@ -15,9 +15,13 @@ commands:
       - run:
           name: Install WireGuard Client
           command: |
-            sudo add-apt-repository ppa:wireguard/wireguard -y
-            sudo apt-get update
-            sudo apt-get install wireguard-dkms wireguard-tools linux-headers-$(uname -r)
+            if [ "$(cat /etc/os-release | grep ^ID= | cut -d= -f2)" != "alpine" ]; then
+              apk add -U wireguard-tools
+            else
+              sudo add-apt-repository ppa:wireguard/wireguard -y
+              sudo apt-get update
+              sudo apt-get install wireguard-dkms wireguard-tools linux-headers-$(uname -r)
+            fi
   connect:
     description: "Connect to WireGuard VPN"
     parameters:
@@ -33,12 +37,21 @@ commands:
             echo -n "${<<parameters.config>>:?}" | \
               base64 -d | \
               sed "s/0.0.0.0\/0/$(curl -s https://ifconfig.me)/g" > wg0.conf
-            sudo mv wg0.conf /etc/wireguard/wg0.conf
-            sudo chmod 600 /etc/wireguard/wg0.conf
+            if [ "$(cat /etc/os-release | grep ^ID= | cut -d= -f2)" != "alpine" ]; then
+              sudo mv wg0.conf /etc/wireguard/wg0.conf
+              sudo chmod 700 /etc/wireguard/wg0.conf
+            else
+              mv wg0.conf /etc/wireguard/wg0.conf
+              chmod 700 /etc/wireguard/wg0.conf
+            fi
       - run:
           name: Connect to VPN
           command: |
-            sudo wg-quick up wg0
+            if [ "$(cat /etc/os-release | grep ^ID= | cut -d= -f2)" != "alpine" ]; then
+              wq-quick up wg0
+            else
+              sudo wg-quick up wg0
+            fi
   disconnect:
     description: "Disconnect from WireGuard VPN"
     steps:
