@@ -48,7 +48,7 @@ commands:
           name: Connect to VPN
           command: |
             if [ "$(cat /etc/os-release | grep ^ID= | cut -d= -f2)" == "alpine" ]; then
-              wq-quick up wg0
+              wg-quick up wg0
             else
               sudo wg-quick up wg0
             fi
