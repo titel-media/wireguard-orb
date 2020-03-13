@@ -18,8 +18,8 @@ commands:
             sudo add-apt-repository ppa:wireguard/wireguard -y
             sudo apt-get update
             sudo apt-get install wireguard-dkms wireguard-tools linux-headers-$(uname -r)
-  connect:
-    description: "Connect to WireGuard VPN"
+  initialize:
+    description: "Initialize WireGuard"
     parameters:
       config:
         description: |
@@ -35,6 +35,9 @@ commands:
               sed "s/0.0.0.0\/0/$(curl -s https://ifconfig.me)/g" > wg0.conf
             sudo mv wg0.conf /etc/wireguard/wg0.conf
             sudo chmod 600 /etc/wireguard/wg0.conf
+  connect:
+    description: "Connect to WireGuard VPN"
+    steps:
       - run:
           name: Connect to VPN
           command: |
@@ -55,12 +58,13 @@ example:
     usage:
       version: 2.1
       orbs:
-        wg: titel-media/wireguard@0.0.5
+        vpn: titel-media/wireguard@0.0.5
       jobs:
         ping:
-          executor: wg/default
+          executor: vpn/default
           steps:
-            - wg/install
-            - wg/connect
+            - vpn/install
+            - vpn/initialize
+            - vpn/connect
             - run: ping -c 5 192.0.2.1
-            - wg/disconnect
+            - vpn/disconnect
