@@ -15,12 +15,19 @@ commands:
       - run:
           name: Install WireGuard Client
           command: |
+            wget -q -O wireguard-dkms_1.0.20200520.deb https://launchpad.net/~wireguard/+archive/ubuntu/wireguard/+files/wireguard-dkms_1.0.20200520-0ppa1~14.04_all.deb
+            checksum="a246632c4f705b903da5725763b5974a  wireguard-dkms_1.0.20200520.deb"
+            checksum_file=$(md5sum wireguard-dkms_1.0.20200520.deb)
+            if [ "$checksum_file" != "$checksum" ]; then
+              exit 1
+            else
+              echo "checksum confirmed"
+            fi
             sudo add-apt-repository ppa:wireguard/wireguard -y
             sudo apt-get update
-            sudo apt-get install wireguard-dkms wireguard-tools linux-headers-$(uname -r)
-            # since 20200611 version of wireguard-dkms is broken this is a temporary fix for it
-            wget -q -O wireguard-dkms_1.0.20200520.deb http://ppa.launchpad.net/wireguard/wireguard/ubuntu/pool/main/w/wireguard-linux-compat/wireguard-dkms_1.0.20200520-0ppa1~14.04_all.deb
+            sudo apt-get install dkms
             sudo dpkg -i wireguard-dkms_1.0.20200520.deb
+            sudo apt-get install wireguard-tools linux-headers-$(uname -r)
   initialize:
     description: "Initialize WireGuard"
     parameters:
