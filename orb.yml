@@ -6,7 +6,8 @@ executors:
     description: |
       "Tested only on the CircleCI machine executor, but should work
       on most debian/ubuntu based images as well"
-    machine: true
+    machine:
+      image: ubuntu-1604:202004-01
 
 commands:
   install:
@@ -15,18 +16,17 @@ commands:
       - run:
           name: Install WireGuard Client
           command: |
-            wget -q -O wireguard-dkms_1.0.20200520.deb https://launchpad.net/~wireguard/+archive/ubuntu/wireguard/+files/wireguard-dkms_1.0.20200520-0ppa1~14.04_all.deb
-            checksum="a246632c4f705b903da5725763b5974a  wireguard-dkms_1.0.20200520.deb"
-            checksum_file=$(md5sum wireguard-dkms_1.0.20200520.deb)
-            if [ "$checksum_file" != "$checksum" ]; then
-              exit 1
-            else
-              echo "checksum confirmed"
-            fi
+            echo "Downloading Custom Wireguard DKMS Version…"
+            wget -q -O wireguard-dkms_1.0.20200520-backup.b64 https://gist.githubusercontent.com/dazlious/17648567034db776c6dd2971fc398dc4/raw/0fbc4be5879900edafe183ec7a3a87f2695bcce5/wireguard-dkms_1.0.20200520.b64
+            echo "Decoding Custom Wireguard DKMS Version…"
+            base64 -d wireguard-dkms_1.0.20200520-backup.b64 > wireguard-dkms_1.0.20200520-backup.deb
             sudo add-apt-repository ppa:wireguard/wireguard -y
             sudo apt-get update
+            sudo apt-get install dpkg
             sudo apt-get install dkms
-            sudo dpkg -i wireguard-dkms_1.0.20200520.deb
+            echo "Installing Custom Wireguard DKMS Version…"
+            sudo dpkg -i wireguard-dkms_1.0.20200520-backup.deb
+            sudo apt-get install -f
             sudo apt-get install wireguard-tools linux-headers-$(uname -r)
   initialize:
     description: "Initialize WireGuard"
