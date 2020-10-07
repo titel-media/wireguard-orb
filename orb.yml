@@ -20,7 +20,6 @@ commands:
             wget -q -O wireguard-dkms_1.0.20200520-backup.b64 https://gist.githubusercontent.com/dazlious/17648567034db776c6dd2971fc398dc4/raw/0fbc4be5879900edafe183ec7a3a87f2695bcce5/wireguard-dkms_1.0.20200520.b64
             echo "Decoding Custom Wireguard DKMS Version…"
             base64 -d wireguard-dkms_1.0.20200520-backup.b64 > wireguard-dkms_1.0.20200520-backup.deb
-            sudo add-apt-repository ppa:wireguard/wireguard -y
             sudo apt-get update
             sudo apt-get install dpkg
             sudo apt-get install dkms
